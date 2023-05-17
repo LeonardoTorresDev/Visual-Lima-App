@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Modal} from 'react-native';
 import {
   ViroARScene,
   ViroARSceneNavigator,
@@ -45,6 +45,30 @@ const InititalScene = (props)=>{
   const handleTextDrag = (dragToPos, source) => {
     setTextPosition(dragToPos);
   }
+
+  const renderImageAndText = (source, text) => {
+      <>
+        <ViroImage
+          source={source}
+          position={[0, 0, -5]}
+          scale={[3, 3, 3]}
+          rotation={[0, 0, 0]}
+          width={1}
+          height={1}
+          onDrag={handleDrag}
+          onClick={handleImagePress}
+          animation={{ name: isAnimating ? 'rotateAnimation' : '', run: true }}
+        />
+        <ViroText
+          text={text}
+          position={[3.3, 0, -5]}
+          scale={[3, 3, 3]}
+          rotation={[0, 0, 0]}
+          style={styles.textStyle}
+          onDrag={handleTextDrag}
+        />
+      </>
+  };
 
   return(
     <ViroARScene>
@@ -116,6 +140,81 @@ const InititalScene = (props)=>{
               onDrag={handleTextDrag}
             />
         </> 
+        ) : data.object === "palais concert" ? (
+          <>
+            <ViroImage
+              source={require('./assets/palais-concert/jr_union_palais_concert.jpg')}
+              position={[0, 0, -5]} // Ajusta la posición en el eje Z para que aparezca en el centro de la vista de realidad aumentada
+              scale={[3, 3, 3]} // Ajusta la escala de la imagen según sea necesario
+              rotation={[0, 0, 0]} // Ajusta la rotación de la imagen según sea necesario
+              width={1} // Ancho de la imagen
+              height={1} // Altura de la imagen
+              onDrag={handleDrag} // Manejar evento de arrastrar
+              onClick={handleImagePress}
+              animation={{ name: isAnimating ? 'rotateAnimation' : '', run: true }}
+            />
+            <ViroText
+              text="Famoso Bar Limeño donde se reunían intelectuales como Valdelomar"
+              position={[3.3, 0, -5]} // Ajusta la posición en el eje Z para que el texto aparezca cerca de la imagen
+              scale={[3, 3, 3]} // Ajusta la escala del texto según sea necesario
+              rotation={[0, 0, 0]} // Ajusta la rotación del texto según sea necesario
+              style={styles.textStyle} // Estilo personalizado para el texto
+              onDrag={handleTextDrag}
+            />
+            <ViroImage
+              source={require('./assets/palais-concert/valdelomar.jpeg')}
+              position={[7, 0, -5]} // Ajusta la posición en el eje Z para que aparezca en el centro de la vista de realidad aumentada
+              scale={[3, 3, 3]} // Ajusta la escala de la imagen según sea necesario
+              rotation={[0, 0, 0]} // Ajusta la rotación de la imagen según sea necesario
+              width={1} // Ancho de la imagen
+              height={1} // Altura de la imagen
+              onDrag={handleDrag} // Manejar evento de arrastrar
+              onClick={handleImagePress}
+              animation={{ name: isAnimating ? 'rotateAnimation' : '', run: true }}
+            />
+        </> 
+        ) : data.object === "iglesia san francisco" ? (
+          <>
+            <ViroText
+              text="Iglesia española de estilo neoclásico fundada en 1774"
+              position={[-3, 0, -5]} // Ajusta la posición en el eje Z para que el texto aparezca cerca de la imagen
+              scale={[3, 3, 3]} // Ajusta la escala del texto según sea necesario
+              rotation={[0, 0, 0]} // Ajusta la rotación del texto según sea necesario
+              style={styles.textStyle} // Estilo personalizado para el texto
+              onDrag={handleTextDrag}
+            />
+            <ViroImage
+              source={require('./assets/san-francisco/san_francisco.jpg')}
+              position={[0, 0, -5]} // Ajusta la posición en el eje Z para que aparezca en el centro de la vista de realidad aumentada
+              scale={[3, 3, 3]} // Ajusta la escala de la imagen según sea necesario
+              rotation={[0, 0, 0]} // Ajusta la rotación de la imagen según sea necesario
+              width={1} // Ancho de la imagen
+              height={1} // Altura de la imagen
+              onDrag={handleDrag} // Manejar evento de arrastrar
+              onClick={handleImagePress}
+              animation={{ name: isAnimating ? 'rotateAnimation' : '', run: true }}
+            />
+            
+            <ViroImage
+              source={require('./assets/san-francisco/osario.jpg')}
+              position={[3.3, 0, -5]} // Ajusta la posición en el eje Z para que aparezca en el centro de la vista de realidad aumentada
+              scale={[3, 3, 3]} // Ajusta la escala de la imagen según sea necesario
+              rotation={[0, 0, 0]} // Ajusta la rotación de la imagen según sea necesario
+              width={1} // Ancho de la imagen
+              height={1} // Altura de la imagen
+              onDrag={handleDrag} // Manejar evento de arrastrar
+              onClick={handleImagePress}
+              animation={{ name: isAnimating ? 'rotateAnimation' : '', run: true }}
+            />
+            <ViroText
+              text="Conocida por sus catacumbas, que fungían como cementerio."
+              position={[7, 0, -5]} // Ajusta la posición en el eje Z para que el texto aparezca cerca de la imagen
+              scale={[3, 3, 3]} // Ajusta la escala del texto según sea necesario
+              rotation={[0, 0, 0]} // Ajusta la rotación del texto según sea necesario
+              style={styles.textStyle} // Estilo personalizado para el texto
+              onDrag={handleTextDrag}
+            />
+        </> 
       ) : null}
     </ViroARScene>
   )
@@ -123,19 +222,56 @@ const InititalScene = (props)=>{
 
 export default () => {
 
-    const [object, setObject] = useState('tv');
-    const [isLoading, setIsLoading] = useState(true);
+  const [object, setObject] = useState('tv');
+  const [isLoading, setIsLoading] = useState(true);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalData, setModalData] = useState(null);
 
-    useEffect(() => {
-      // Lógica para cargar la escena
-      // Una vez que la escena se haya cargado completamente, establece isLoading en false para mostrar la escena
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 2000);
-    }, []);
+  const toggleModal = () => {
+    fetch('https://visual-lima-api.herokuapp.com/stats/view')
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        setModalData([data]);
+      })
+      .catch(error => console.error(error));
+    setIsModalVisible(!isModalVisible);
+  };
+
+  useEffect(() => {
+    // Lógica para cargar la escena
+    // Una vez que la escena se haya cargado completamente, establece isLoading en false para mostrar la escena
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  }, []);
+
+
+  const handleObjectSelection = (experience) => {
+    // Realizar la petición POST a la API
+    fetch('https://visual-lima-api.herokuapp.com/stats', {
+      method: 'POST',
+      body: JSON.stringify({ experience, user: "prueba", date: new Date()}),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        // Aquí puedes realizar cualquier acción adicional con la respuesta de la API
+        console.log(data);
+      })
+      .catch(error => {
+        // Manejar cualquier error que ocurra durante la petición
+        console.error(error);
+      });
   
-    return (
-        <View style={styles.mainView}>
+    // Actualizar el estado del objeto seleccionado
+    setObject(experience);
+  };
+
+  return (
+      <View style={styles.mainView}>
         {isLoading ? (
           <LoadingScreen />
         ) : (
@@ -156,23 +292,53 @@ export default () => {
             contentContainerStyle={styles.controlsContent}
             showsHorizontalScrollIndicator={false}
           >
-            <TouchableOpacity onPress={() => setObject('municipalidad')}>
+            <TouchableOpacity onPress={() => handleObjectSelection('municipalidad')}>
               <Text style={styles.text}>Municipalidad</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setObject('palacio')}>
+            <TouchableOpacity onPress={() => handleObjectSelection('palacio')}>
               <Text style={styles.text}>Palacio</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setObject('skull')}>
-              <Text style={styles.text}>Calavera</Text>
+            <TouchableOpacity onPress={() => handleObjectSelection('palais concert')}>
+              <Text style={styles.text}>Palais Concert!</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setObject('catedral')}>
+            <TouchableOpacity onPress={() => handleObjectSelection('catedral')}>
               <Text style={styles.text}>Catedral</Text>
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleObjectSelection('iglesia san francisco')}>
+              <Text style={styles.text}>Convento San Francisco</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={toggleModal}>
+              <Text style={styles.textSpecial}>Estadísticas</Text>
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => setObject('tv')}>
-              <Text style={styles.text}>Limpiar</Text>
+              <Text style={styles.textSpecial}>Limpiar</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
+        <Modal
+          visible={isModalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={toggleModal}
+        >
+          <View style={styles.modalView}>
+            {modalData ? (
+              <>
+                <Text style={styles.modalText}>Estadísticas de Visualización</Text>
+                <Text style={styles.modalTextLine}>Palais Concert: {modalData[0].street}</Text>
+                <Text style={styles.modalTextLine}>Catedral de Lima: {modalData[0].cathedral}</Text>
+                <Text style={styles.modalTextLine}>Municipalidad de Lima: {modalData[0].municipality}</Text>
+                <Text style={styles.modalTextLine}>Palacio de Gobierno: {modalData[0].palace}</Text>
+                <Text style={styles.modalTextLine}>Iglesia de San Francisco: {modalData[0].church}</Text>
+              </>
+            ) : (
+              <Text style={styles.modalText}>Cargando...</Text>
+            )}
+          </View>
+          <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
+            <Text style={styles.closeButtonText}>Cerrar</Text>
+          </TouchableOpacity>
+        </Modal>
       </View>
     );
   };
@@ -199,7 +365,21 @@ export default () => {
       padding: 25,
       color: '#FFFFFF',
       fontWeight: 'bold',
-      alignContent: 'center'
+      alignContent: 'center',
+      textAlign: 'justify'
+      
+    },
+    textSpecial: {
+      margin: 10,
+      marginBottom: 25,
+      borderRadius: 20,
+      backgroundColor: '#c13c3c',
+      padding: 25,
+      color: '#000000',
+      fontWeight: 'bold',
+      alignContent: 'center',
+      textAlign: 'justify'
+      
     },
     textTitle: {
       backgroundColor: '#FFC300',
@@ -209,5 +389,35 @@ export default () => {
       padding: 15,
       fontSize: 25,
     },
+    modalView: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalText: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      marginBottom: 20,
+      color: '#FFFFFF',
+    },
+    modalTextLine: {
+      fontSize: 20,
+      marginBottom: 20,
+      color: '#FFFFFF',
+    },
+    closeButton: {
+      position: 'absolute',
+      bottom: 20,
+      alignSelf: 'center',
+      backgroundColor: '#FFFFFF',
+      padding: 10,
+      borderRadius: 10,
+    },
+    closeButtonText: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: '#000000',
+    }
   });
   
